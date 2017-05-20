@@ -7,12 +7,28 @@
 //
 
 import UIKit
+import Moya
+import RxSwift
 
 class ViewController: UIViewController {
 
+    
+    var provider: RxMoyaProvider<GitHub>!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+
+        provider = RxMoyaProvider<GitHub>()
+        provider.request(GitHub.users(since: nil)).subscribe { event in
+            switch event {
+            case .next(let response):
+                print(response)
+            case .error(let error):
+                print(error)
+            default:
+                break
+            }
+        }
     }
 
     override func didReceiveMemoryWarning() {
