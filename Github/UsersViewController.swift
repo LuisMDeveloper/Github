@@ -12,6 +12,7 @@ import Moya
 import Moya_ModelMapper
 import Mapper
 import RxCocoa
+import RxOptional
 
 class UsersViewController: UIViewController {
 
@@ -25,6 +26,7 @@ class UsersViewController: UIViewController {
         
         provider = RxMoyaProvider<GitHub>()
         findUsers(since: nil)
+            .replaceNilWith([])
             .bind(to: tableView.rx.items) { tableView, row, item in
                 let cell = tableView.dequeueReusableCell(withIdentifier: "UserCell", for: IndexPath(row: row, section: 0))
                 cell.textLabel?.text = item.login
@@ -35,11 +37,12 @@ class UsersViewController: UIViewController {
         
     }
     
-    internal func findUsers(since: String?) -> Observable<[User]> {
+    internal func findUsers(since: String?) -> Observable<[User]?> {
         return self.provider
             .request(GitHub.users(since: since))
             .debug()
-            .mapArray(type: User.self)
+            .mapArrayOptional(type: User.self)
+        
     }
 
 
