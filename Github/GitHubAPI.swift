@@ -6,7 +6,6 @@
 //  Copyright © 2017 Luis Manuel Ramirez Vargas. All rights reserved.
 //
 
-import Foundation
 import Moya
 
 
@@ -22,24 +21,24 @@ enum GitHub {
 }
 
 extension GitHub: TargetType {
-    /// The target's base `URL`.
+    /// La URL de destino.
     public var baseURL: URL {
         return URL(string: "https://api.github.com")!
     }
 
     
-    /// The path to be appended to `baseURL` to form the full `URL`.
+    /// La ruta a ser añadida a `baseURL` para formar la URL completa.
     public var path: String {
         switch self {
         case .userProfile(let username):
             return "/users/\(username.URLEscapedString)"
-        case .users(let since):
+        case .users(_):
             return "/users"
         }
 
     }
     
-    /// The HTTP method used in the request.
+    /// El método HTTP utilizado en la solicitud.
     public var method: Moya.Method {
         switch self {
         case .userProfile, .users:
@@ -47,10 +46,10 @@ extension GitHub: TargetType {
         }
     }
 
-    /// The parameters to be encoded in the request.
+    /// Los parámetros a codificar en la solicitud.
     public var parameters: [String : Any]? {
         switch self {
-        case .userProfile(let username):
+        case .userProfile(_):
             return nil
         case .users(let since):
             if let since = since {
@@ -61,12 +60,12 @@ extension GitHub: TargetType {
 
     }
 
-    /// The method used for parameter encoding.
+    /// El método utilizado para la codificación de parámetros.
     public var parameterEncoding: ParameterEncoding {
         return JSONEncoding.default
     }
 
-    /// Provides stub data for use in testing.
+    /// Proporciona datos de stub para su uso en pruebas.
     public var sampleData: Data {
         switch self {
         case .userProfile(let username):
@@ -77,7 +76,7 @@ extension GitHub: TargetType {
         }
     }
 
-    /// The type of HTTP task to be performed.
+    /// El tipo de tarea HTTP que se realizará.
     public var task: Task {
         return .request
     }
